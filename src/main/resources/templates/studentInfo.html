@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="/js/calendar.js.css" />
+    <script type="text/javascript" src="/js/calendar.js"></script>
+    <script type="text/javascript" src="/js/d3.v7.js"></script>
+    <script th:inline="javascript">
+        function chooseClass(id) {
+            var url=/*[[ @{'/student/class/'} ]]*/;
+            window.location.href=url+id;
+        }
+        function joinClass(id) {
+            var url=/*[[ @{'/student/class/join/'} ]]*/;
+            window.location.href=url+id;
+        }
+    </script>
+
+    <script type="module">
+
+        // Declare the chart dimensions and margins.
+        const width = 640;
+        const height = 400;
+        const marginTop = 20;
+        const marginRight = 20;
+        const marginBottom = 30;
+        const marginLeft = 40;
+
+        // Declare the x (horizontal position) scale.
+        const x = d3.scaleUtc()
+            .domain([new Date("2023-01-01"), new Date("2024-01-01")])
+            .range([marginLeft, width - marginRight]);
+
+        // Declare the y (vertical position) scale.
+        const y = d3.scaleLinear()
+            .domain([0, 100])
+            .range([height - marginBottom, marginTop]);
+
+        // Create the SVG container.
+        const svg = d3.create("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        // Add the x-axis.
+        svg.append("g")
+            .attr("transform", `translate(0,${height - marginBottom})`)
+            .call(d3.axisBottom(x));
+
+        // Add the y-axis.
+        svg.append("g")
+            .attr("transform", `translate(${marginLeft},0)`)
+            .call(d3.axisLeft(y));
+
+        // Append the SVG element.
+        container.append(svg.node());
+
+    </script>
+</head>
+<body>
+<!-- Nav pills -->
+<ul class="nav nav-pills" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="pill" href="#home">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#menu1">Course</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#menu2">Schedule</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#menu3">Class today</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active container" id="home">
+        <table class="table">
+            <tr>
+                <td>first name</td>
+                <td th:text="${student.firstName}"></td>
+            </tr>
+            <tr>
+                <td>last name</td>
+                <td th:text="${student.lastName}"></td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td th:text="${student.email}"></td>
+            </tr>
+            <tr>
+                <td>gender</td>
+                <td th:text="${student.gender}"></td>
+            </tr>
+            <tr>
+                <td>date Of Birth</td>
+                <td th:text="${student.dateOfBirth}"></td>
+            </tr>
+        </table>
+        <div id="container"></div>
+    </div>
+    <div class="tab-pane container" id="menu1">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>course Name</th>
+                <th>description</th>
+                <th>status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="studentCourse : ${studentCourses}">
+                <td th:text="${studentCourse.course.courseName}"></td>
+                <td th:text="${studentCourse.course.description}"></td>
+                <td th:text="${studentCourse.status}"></td>
+                <td>
+                    <button type="button" class="btn btn-primary" th:onclick="chooseClass([[${studentCourse.course.id}]])">choose class</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+        <a th:href="@{/student/course}">choose course</a>
+    </div>
+    <div class="tab-pane container" id="menu2">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>class name</th>
+                    <th>start time</th>
+                    <th>end time</th>
+                    <th>action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="studentClass : ${studentClasses}">
+                    <td th:text="${studentClass.course.courseName}"></td>
+                    <td th:text="${studentClass.teacherCourse.startTime}"></td>
+                    <td th:text="${studentClass.teacherCourse.endTime}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" th:disabled="${studentClass.teacherCourse.timeUP == '1'}" th:onclick="joinClass([[${studentClass.classId}]])">join class</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div id="calendar"></div>
+    </div>
+    <div class="tab-pane container" id="menu3">
+
+    </div>
+</div>
+</body>
+<script th:inline="javascript">
+    var calendarInstance = new calendarJs( "calendar", {
+        exportEventsEnabled: true,
+    } );
+
+    document.title += " v" + calendarInstance.getVersion();
+
+    for (let studentClass of /*[[${studentClasses}]]*/ )
+    {
+        var event = {
+            from: studentClass["teacherCourse"]["startTime"],
+            to: studentClass["teacherCourse"]["endTime"],
+            title: studentClass["course"]["courseName"],
+            description: studentClass["course"]["description"]
+        };
+
+        calendarInstance.addEvent( event );
+    }
+
+</script>
+</html>

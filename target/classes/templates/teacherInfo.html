@@ -1,0 +1,112 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="/js/calendar.js.css" />
+    <script type="text/javascript" src="/js/calendar.js"></script>
+
+    <script th:inline="javascript">
+        function joinClass(id) {
+            var url=/*[[ @{'/teacher/class/join/'} ]]*/;
+            window.location.href=url+id;
+        }
+    </script>
+</head>
+<body>
+<!-- Nav pills -->
+<ul class="nav nav-pills" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link active" data-toggle="pill" href="#home">Personal Info</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#menu1">Schedule</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="pill" href="#menu2">Menu 2</a>
+    </li>
+</ul>
+
+<!-- Tab panes -->
+<div class="tab-content">
+    <div id="home" class="container tab-pane active"><br>
+        <table class="table">
+            <tr>
+                <td>first name</td>
+                <td th:text="${teacher.firstName}"></td>
+            </tr>
+            <tr>
+                <td>last name</td>
+                <td th:text="${teacher.lastName}"></td>
+            </tr>
+            <tr>
+                <td>email</td>
+                <td th:text="${teacher.email}"></td>
+            </tr>
+            <tr>
+                <td>gender</td>
+                <td th:text="${teacher.gender}"></td>
+            </tr>
+            <tr>
+                <td>date Of Birth</td>
+                <td th:text="${teacher.dateOfBirth}"></td>
+            </tr>
+        </table>
+    </div>
+    <div id="menu1" class="container tab-pane fade"><br>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>class name</th>
+                <th>start time</th>
+                <th>end time</th>
+                <th>action</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="teacherCourse : ${teacherCourses}">
+                    <td th:text="${teacherCourse.course.courseName}"></td>
+                    <td th:text="${teacherCourse.startTime}"></td>
+                    <td th:text="${teacherCourse.endTime}"></td>
+                    <td>
+                        <button type="button" class="btn btn-primary" th:disabled="${teacherCourse.timeUP == '1'}" th:onclick="joinClass([[${teacherCourse.id}]])">join class</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a th:href="@{/teacher/course}">choose course</a>
+        <div id="calendar"></div>
+    </div>
+    <div id="menu2" class="container tab-pane fade"><br>
+        <h3>Menu 2</h3>
+        <p></p>
+    </div>
+</div>
+
+</body>
+<script th:inline="javascript">
+    var calendarInstance = new calendarJs( "calendar", {
+        exportEventsEnabled: true,
+    } );
+
+    document.title += " v" + calendarInstance.getVersion();
+
+    for (let teacherCourse of /*[[${teacherCourses}]]*/ )
+    {
+        var event = {
+            from: teacherCourse["startTime"],
+            to: teacherCourse["endTime"],
+            title: teacherCourse["course"]["courseName"],
+            description: "A description of the new event"
+        };
+
+        calendarInstance.addEvent( event );
+    }
+
+</script>
+</html>

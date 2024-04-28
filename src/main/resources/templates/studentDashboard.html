@@ -1,0 +1,512 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/hierarchy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/locales/de_DE.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/geodata/germanyLow.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/fonts/notosans-sc.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <style>
+#friendChartdiv {
+  width: 100%;
+  max-width: 100%;
+  height: 450px;
+}
+#influentialChartdiv {
+  width: 100%;
+  max-width: 100%;
+  height: 600px;
+}
+#disrespectChartdiv {
+  width: 100%;
+  max-width: 100%;
+  height: 600px;
+}
+#avgChartdiv {
+  width: 100%;
+  max-width: 100%;
+  height: 600px;
+}
+    </style>
+    <script th:inline="javascript">
+        //friends
+        var friendsData = /*[[${friends}]]*/;
+        var convertedData = {
+          name: friendsData.participant.firstName + ' ' + friendsData.participant.lastName,
+          value: friendsData.participantId,
+          children: friendsData.list.map(item => ({
+            name: item.firstName + ' ' + item.lastName,
+            value: item.id
+          }))
+        };
+
+        am5.ready(function() {
+            var root = am5.Root.new("friendChartdiv");
+
+            root.setThemes([
+              am5themes_Animated.new(root)
+            ]);
+
+            var data = convertedData;
+
+            var container = root.container.children.push(am5.Container.new(root, {
+              width: am5.percent(100),
+              height: am5.percent(100),
+              layout: root.verticalLayout
+            }));
+            var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+                downDepth: 1,
+                initialDepth: 1,
+                topDepth: 0,
+                maxRadius: 40,
+                minRadius: 22,
+                valueField: "value",
+                categoryField: "name",
+                childDataField: "children",
+                idField: "name",
+                linkWithStrength: 0.3,
+                linkWithField: "linkWith",
+                manyBodyStrength: -15,
+                centerStrength: 0.5
+            }));
+
+            series.get("colors").setAll({
+              step: 2
+            });
+
+            series.links.template.set("strength", 1);
+            series.data.setAll([data]);
+            series.set("selectedDataItem", series.dataItems[0]);
+            series.appear(1000, 100);
+            });
+//influential
+        var influentialData = /*[[${influential}]]*/;
+        var influentialConvertedData = {
+          name: influentialData.participant.firstName + ' ' + influentialData.participant.lastName,
+          value: influentialData.participantId,
+          children: influentialData.list.map(item => ({
+            name: item.firstName + ' ' + item.lastName,
+            value: item.id
+          }))
+        };
+
+        am5.ready(function() {
+            var root = am5.Root.new("influentialChartdiv");
+
+            root.setThemes([
+              am5themes_Animated.new(root)
+            ]);
+
+            var data = influentialConvertedData;
+
+            var container = root.container.children.push(am5.Container.new(root, {
+              width: am5.percent(100),
+              height: am5.percent(100),
+              layout: root.verticalLayout
+            }));
+            var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+                downDepth: 1,
+                initialDepth: 1,
+                topDepth: 0,
+                maxRadius: 40,
+                minRadius: 22,
+                valueField: "value",
+                categoryField: "name",
+                childDataField: "children",
+                idField: "name",
+                linkWithStrength: 0.3,
+                linkWithField: "linkWith",
+                manyBodyStrength: -15,
+                centerStrength: 0.5
+            }));
+
+            series.get("colors").setAll({
+              step: 2
+            });
+
+            series.links.template.set("strength", 1);
+            series.data.setAll([data]);
+            series.set("selectedDataItem", series.dataItems[0]);
+            series.appear(1000, 100);
+            });
+//disrespect
+        var disrespectData = /*[[${disrespect}]]*/;
+        var disrespectConvertedData = {
+          name: disrespectData.participant.firstName + ' ' + disrespectData.participant.lastName,
+          value: disrespectData.participantId,
+          children: disrespectData.list.map(item => ({
+            name: item.firstName + ' ' + item.lastName,
+            value: item.id
+          }))
+        };
+
+        am5.ready(function() {
+            var root = am5.Root.new("disrespectChartdiv");
+
+            root.setThemes([
+              am5themes_Animated.new(root)
+            ]);
+
+            var data = disrespectConvertedData;
+
+            var container = root.container.children.push(am5.Container.new(root, {
+              width: am5.percent(100),
+              height: am5.percent(100),
+              layout: root.verticalLayout
+            }));
+            var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+                downDepth: 1,
+                initialDepth: 1,
+                topDepth: 0,
+                maxRadius: 40,
+                minRadius: 22,
+                valueField: "value",
+                categoryField: "name",
+                childDataField: "children",
+                idField: "name",
+                linkWithStrength: 0.3,
+                linkWithField: "linkWith",
+                manyBodyStrength: -15,
+                centerStrength: 0.5
+            }));
+
+            series.get("colors").setAll({
+              step: 2
+            });
+
+            series.links.template.set("strength", 1);
+            series.data.setAll([data]);
+            series.set("selectedDataItem", series.dataItems[0]);
+            series.appear(1000, 100);
+            });
+
+        //avg
+        var responseData = /*[[${response}]]*/;
+        var classAvgData = /*[[${classAvg}]]*/;
+        var schoolAvgData = /*[[${schoolAvg}]]*/;
+
+        var avgData = [
+          {
+            quantity: "Manbox",
+            student: parseFloat(responseData.manbox5Overall),
+            classAvg: parseFloat(classAvgData.manbox5Overall),
+            schoolAvg: parseFloat(schoolAvgData.manbox5Overall)
+          },
+          {
+            quantity: "Bullying",
+            student: parseFloat(responseData.bullying),
+            classAvg: parseFloat(classAvgData.bullying),
+            schoolAvg: parseFloat(schoolAvgData.bullying)
+          },
+          {
+            quantity: "Growth Mindset",
+            student: parseFloat(responseData.growthMindset),
+            classAvg: parseFloat(classAvgData.growthMindset),
+            schoolAvg: parseFloat(schoolAvgData.growthMindset)
+          },
+          {
+            quantity: "comfortable",
+            student: parseFloat(responseData.comfortable),
+            classAvg: parseFloat(classAvgData.comfortable),
+            schoolAvg: parseFloat(schoolAvgData.comfortable)
+          },
+          {
+            quantity: "COVID",
+            student: parseFloat(responseData.covid),
+            classAvg: parseFloat(classAvgData.covid),
+            schoolAvg: parseFloat(schoolAvgData.covid)
+          },
+          {
+            quantity: "pwi wellbeing",
+            student: parseFloat(responseData.pwiWellbeing),
+            classAvg: parseFloat(classAvgData.pwiWellbeing),
+            schoolAvg: parseFloat(schoolAvgData.pwiWellbeing)
+          },
+          {
+            quantity: "isolated",
+            student: parseFloat(responseData.isolated),
+            classAvg: parseFloat(classAvgData.isolated),
+            schoolAvg: parseFloat(schoolAvgData.isolated)
+          },
+          {
+            quantity: "Candidate PercEffort",
+            student: parseFloat(responseData.candidatePercEffort),
+            classAvg: parseFloat(classAvgData.candidatePercEffort),
+            schoolAvg: parseFloat(schoolAvgData.candidatePercEffort)
+          }
+        ];
+
+        am5.ready(function() {
+        var root = am5.Root.new("avgChartdiv");
+
+        root.setThemes([am5themes_Animated.new(root)]);
+
+        var chart = root.container.children.push(
+          am5xy.XYChart.new(root, {
+            panX: false,
+            panY: false,
+            wheelX: "panX",
+            wheelY: "zoomX",
+            paddingLeft: 0,
+            layout: root.verticalLayout
+          })
+        );
+
+        chart.set(
+          "scrollbarX",
+          am5.Scrollbar.new(root, {
+            orientation: "horizontal"
+          })
+        );
+
+        var data = avgData;
+
+        var xRenderer = am5xy.AxisRendererX.new(root, {
+          minorGridEnabled: true,
+          minGridDistance: 60
+        });
+        var xAxis = chart.xAxes.push(
+          am5xy.CategoryAxis.new(root, {
+            categoryField: "quantity",
+            renderer: xRenderer,
+            tooltip: am5.Tooltip.new(root, {})
+          })
+        );
+        xRenderer.grid.template.setAll({
+          location: 1
+        })
+
+        xAxis.data.setAll(data);
+
+        var yAxis = chart.yAxes.push(
+          am5xy.ValueAxis.new(root, {
+            min: 0,
+            extraMax: 0.1,
+            renderer: am5xy.AxisRendererY.new(root, {
+              strokeOpacity: 0.1
+            })
+          })
+        );
+
+        var series1 = chart.series.push(
+          am5xy.ColumnSeries.new(root, {
+            name: "student",
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: "student",
+            categoryXField: "quantity",
+            tooltip: am5.Tooltip.new(root, {
+              pointerOrientation: "horizontal",
+              labelText: "{name} of {categoryX}: {valueY} {info}"
+            })
+          })
+        );
+
+        series1.columns.template.setAll({
+          tooltipY: am5.percent(10),
+          templateField: "columnSettings"
+        });
+
+        series1.data.setAll(data);
+
+        var series2 = chart.series.push(
+          am5xy.LineSeries.new(root, {
+            name: "classAvg",
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: "classAvg",
+            categoryXField: "quantity",
+            tooltip: am5.Tooltip.new(root, {
+              pointerOrientation: "horizontal",
+              labelText: "{name} of {categoryX}: {valueY} {info}"
+            })
+          })
+        );
+
+        series2.strokes.template.setAll({
+          strokeWidth: 3,
+          templateField: "strokeSettings"
+        });
+
+
+        series2.data.setAll(data);
+
+        series2.bullets.push(function () {
+          return am5.Bullet.new(root, {
+            sprite: am5.Circle.new(root, {
+              strokeWidth: 3,
+              stroke: series2.get("stroke"),
+              radius: 5,
+              fill: root.interfaceColors.get("background")
+            })
+          });
+        });
+
+        var series3 = chart.series.push(
+          am5xy.LineSeries.new(root, {
+            name: "schoolAvg",
+            xAxis: xAxis,
+            yAxis: yAxis,
+            valueYField: "schoolAvg",
+            categoryXField: "quantity",
+            tooltip: am5.Tooltip.new(root, {
+              pointerOrientation: "horizontal",
+              labelText: "{name} of {categoryX}: {valueY} {info}"
+            })
+          })
+        );
+
+        series3.strokes.template.setAll({
+          strokeWidth: 3,
+          templateField: "strokeSettings"
+        });
+
+
+        series3.data.setAll(data);
+
+        series3.bullets.push(function () {
+          return am5.Bullet.new(root, {
+            sprite: am5.Circle.new(root, {
+              strokeWidth: 3,
+              stroke: series3.get("stroke"),
+              radius: 5,
+              fill: root.interfaceColors.get("background")
+            })
+          });
+        });
+
+
+        chart.set("cursor", am5xy.XYCursor.new(root, {}));
+
+        var legend = chart.children.push(
+          am5.Legend.new(root, {
+            centerX: am5.p50,
+            x: am5.p50
+          })
+        );
+        legend.data.setAll(chart.series.values);
+
+        chart.appear(1000, 100);
+        series1.appear();
+        });
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="#"><h3>Students Survey</h3></a>
+
+    <!-- Links -->
+    <ul class="navbar-nav">
+    </ul>
+    <!-- Links -->
+    <form class="form-inline" method="post" th:action="@{/student/search}" th:object="${participant}">
+        participant id: <input class="form-control mr-sm-2" type="text" th:field="*{id}" placeholder="Search">
+        <div class="form-group">
+            <label for="surveyDate">Filter By Semester:</label>
+            <select class="form-control" id="surveyDate" th:field="*{surveyDate}">
+                <option value="2023-01-01 00:00:00">January 2023</option>
+                <option value="2023-07-01 00:00:00">July 2023</option>
+            </select>
+        </div>
+        <button class="btn btn-success" type="submit">Search</button>
+    </form>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header  bg-info"><h4>Student Information</h4></div>
+                <div class="card-body">
+                    <table class="table">
+                        <tr><td>ID</td><td th:text="${participant.id}"></td></tr>
+                        <tr><td>firstName</td><td th:text="${participant.firstName}"></td></tr>
+                        <tr><td>lastName</td><td th:text="${participant.lastName}"></td></tr>
+                        <tr><td>email</td><td th:text="${participant.email}"></td></tr>
+                        <tr><td>perc effort</td><td th:text="${participant.percEffort}"></td></tr>
+                        <tr><td>attendance</td><td th:text="${participant.attendance}"></td></tr>
+                        <tr><td>perc academic</td><td th:text="${participant.percAcademic}"></td></tr>
+                        <tr><td>completeYears</td><td th:text="${participant.completeYears}"></td></tr>
+                        <tr><td>house</td><td th:text="${participant.house}"></td></tr>
+                        <tr><td>survey date</td><td th:text="${participant.surveyDate}"></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header  bg-info"><h4>Network</h4></div>
+                <div class="card-body">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="friend-tab" data-toggle="tab" href="#friend" role="tab" aria-controls="friend" aria-selected="true">friends</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="influential-tab" data-toggle="tab" href="#influential" role="tab" aria-controls="influential" aria-selected="false">influential</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="disrespect-tab" data-toggle="tab" href="#disrespect" role="tab" aria-controls="disrespect" aria-selected="false">disrespect</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade show active" id="friend" role="tabpanel" aria-labelledby="friend-tab">
+                            <h3>Friends</h3>
+                            <div class="card-body" id="friendChartdiv"></div>
+                        </div>
+                        <div class="tab-pane fade" id="influential" role="tabpanel" aria-labelledby="influential-tab">
+                            <h3>Influential</h3>
+                            <div class="card-body" id="influentialChartdiv"></div>
+                        </div>
+                        <div class="tab-pane fade" id="disrespect" role="tabpanel" aria-labelledby="disrespect-tab">
+                            <h3>Disrespect</h3>
+                            <div class="card-body" id="disrespectChartdiv"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-info"><h4>Insight</h4></div>
+                <div class="card-body">
+                    <div class="card-body" id="avgChartdiv"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header  bg-info"><h4>Response</h4></div>
+                <div class="card-body">
+                    <table class="table">
+                        <tr><td>status</td><td th:text="${response.status}"></td></tr>
+                        <tr><td>manbox</td><td th:text="${response.manbox5Overall}"></td></tr>
+                        <tr><td>At this school, bullying count:</td><td th:text="${response.bullying}"></td></tr>
+                        <tr><td>growthMindset</td><td th:text="${response.growthMindset}"></td></tr>
+                        <tr><td>candidate_perc_effort</td><td th:text="${response.candidatePercEffort}"></td></tr>
+                        <tr><td>I feel comfortable at the  School</td><td th:text="${response.comfortable}"></td></tr>
+                        <tr><td>I feel worried that COVID-19 has had a big impact on my education.</td><td th:text="${response.COVID}"></td></tr>
+                        <tr><td>How happy are you with your life as a whole?</td><td th:text="${response.pwiWellbeing}"></td></tr>
+                        <tr><td>At school, I feel isolated because of my opinions</td><td th:text="${response.isolated}"></td></tr>
+                        <tr><td>comments</td><td th:text="${response.comments}"></td></tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
