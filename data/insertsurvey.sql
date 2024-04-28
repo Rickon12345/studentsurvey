@@ -1,0 +1,1 @@
+insert into survey(id, student_id, participant_id, survey_date) values(1,1,32391,'2023-01-01 00:00:00');

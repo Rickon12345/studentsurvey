@@ -1,0 +1,59 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
+<section class="vh-100" style="background-color: #eee;">
+    <div class="container h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-lg-12 col-xl-11">
+                <div class="card text-black" style="border-radius: 25px;">
+                    <div class="card-body p-md-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-10 col-lg-6 col-xl-7 d-flex align-items-center order-1 order-lg-2">
+
+                                <img src="https://img.freepik.com/free-vector/mobile-login-concept-illustration_114360-83.jpg?w=740&t=st=1696578083~exp=1696578683~hmac=bc1ef7f5ce155f33394b242b6e466d3daf8ce928622a3704820a30d23e4f3ab0"
+                                     class="img-fluid" alt="Sample image">
+                            </div>
+                            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+
+                               <form  method="post" th:action="@{/teacher/login}" th:object="${teacher}">
+
+                                   <div class="divider d-flex align-items-center my-4">
+                                       <p class="text-center h2 fw-bold mb-5 mx-1 mx-md-4 mt-4">Teacher Login</p>
+                                   </div>
+
+                                    <div class="form-outline mb-4">
+
+                                       <input type="text" class="form-control" id="name" th:field="*{email}" placeholder="your email">
+                                      <label for="name">Email</label>
+                                        </div>
+                                     <div class="form-outline mb-3">
+                                         <input type="password" class="form-control" id="password" th:field="*{password}" placeholder="your Password">
+                                         <label for="password">Password</label>
+                                     </div>
+                                       <div class="d-flex justify-content-between align-items-center">
+                                       <a th:href="@{/teacher/register}" style="text-align: center;">Register</a>
+                                   </div>
+
+                                   <div class="text-center text-lg-start mt-4 pt-2">
+                                       <button type="submit" class="btn btn-primary btn-lg"
+                                               style="padding-left: 2.5rem; padding-right: 2.5rem;">Submit</button>
+                                   </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
