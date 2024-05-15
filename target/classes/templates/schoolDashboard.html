@@ -1,0 +1,229 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Getting Started: Serving Web Content</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.4/dist/jquery.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/percent.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/hierarchy.js"></script>
+
+    <style>
+        #chartdiv {
+          width: 100%;
+          height: 600px;
+        }
+
+        #nodeChartDiv {
+          width: 100%;
+          height: 600px;
+        }
+
+    </style>
+    <script th:inline="javascript">
+        var affiliationGroupsChartData = /*[[${affiliationGroups}]]*/;
+        const monthData = affiliationGroupsChartData.map(item => ({ category: item.affiliationTitle, value: parseInt(item.count) }));
+
+        am5.ready(function() {
+          var root = am5.Root.new("chartdiv");
+          root.setThemes([
+            am5themes_Animated.new(root)
+          ]);
+
+          var chart = root.container.children.push(
+            am5percent.PieChart.new(root, {
+              endAngle: 270,
+              radius: am5.percent(50)
+            })
+          );
+
+          var series = chart.series.push(
+            am5percent.PieSeries.new(root, {
+              valueField: "value",
+              categoryField: "category",
+              endAngle: 270
+            })
+          );
+
+          series.states.create("hidden", {
+            endAngle: -90
+          });
+
+          series.data.setAll(monthData);
+
+          series.appear(1000, 100);
+
+        });
+
+        var participantList = /*[[${participantList}]]*/;
+        var groupedData = {};
+        participantList.forEach(item => {
+          if (!groupedData[item.house]) {
+            groupedData[item.house] = [];
+          }
+          groupedData[item.house].push({ name: item.firstName + ' ' + item.lastName, value: item.id });
+        });
+
+        var result = [];
+        for (var house in groupedData) {
+          result.push({ name: house, children: groupedData[house] });
+        }
+
+        var finalResult = [{
+          name: "House",
+          children: result
+        }];
+        am5.ready(function() {
+        var root = am5.Root.new("nodeChartDiv");
+
+        root.setThemes([
+          am5themes_Animated.new(root)
+        ]);
+
+        var container = root.container.children.push(
+          am5.Container.new(root, {
+            width: am5.percent(100),
+            height: am5.percent(100),
+            layout: root.verticalLayout
+          })
+        );
+
+        var series = container.children.push(
+          am5hierarchy.Pack.new(root, {
+            downDepth: 1,
+            initialDepth: 1,
+            valueField: "value",
+            categoryField: "name",
+            childDataField: "children"
+          })
+        );
+
+        series.data.setAll(finalResult);
+        series.set("selectedDataItem", series.dataItems[0]);
+
+        container.children.unshift(
+          am5hierarchy.BreadcrumbBar.new(root, {
+            series: series
+          })
+        );
+        });
+      function top10select() {
+            var topType = $("#selectType").val();
+            var surveyDate = $("#surveyDate").val();
+            var url = /*[[ @{'/admin/top/'} ]]*/;
+            var url1 = url + topType + "/semester/" + surveyDate;
+            $.get(url1, function(data) {
+                $('#top10').html(data);
+            });
+        }
+    </script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-light navbar-light">
+    <!-- Brand/logo -->
+    <a class="navbar-brand" href="#">Students Survey</a>
+
+    <!-- Links -->
+    <form class="form-inline" method="post" th:action="@{/admin/search}" th:object="${participant}">
+        <input class="form-control mr-sm-2" type="text" th:field="*{id}" placeholder="Search">
+        <div class="form-group">
+            <label for="surveyDate">Filter By Semester:</label>
+            <select class="form-control" id="surveyDate" th:field="*{surveyDate}">
+                <option value="2023-01-01 00:00:00">January 2023</option>
+                <option value="2023-07-01 00:00:00">July 2023</option>
+            </select>
+        </div>
+        <button class="btn btn-success" type="submit">Search</button>
+    </form>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info"><h4>Affiliation Groups</h4></div>
+                <div class="card-body">
+                    <div class="card-body" id="chartdiv"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info"><h4>Houses</h4></div>
+                <div class="card-body">
+                    <div class="card-body" id="nodeChartDiv"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info"><h4>Top 10</h4></div>
+                <div class="card-body"><div class="form-group">
+                    <label for="selectType">Filter By type:</label>
+                    <select class="form-control" id="selectType" onchange="top10select(this)">
+                        <option value="betweenness_centrality">Betweenness centrality</option>
+                        <option value="Clustering">Clustering</option>
+                        <option value="in_degree_centrality">In degree centrality</option>
+                        <option value="out_degree_centrality">Out degree centrality</option>
+                    </select>
+                </div>
+                    <div id="top10" th:fragment="top10" class="tab-content">
+                        <div class="tab-pane active container">
+                            <table class="table table-striped table-bordered">
+                                <tr>
+                                    <th>Name</th>
+                                    <th>List</th>
+                                </tr>
+                                <tr th:each="top : ${topList}">
+                                    <td th:text="${top.name}"></td>
+                                    <td th:text="${top.value}"></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-info">Overall Insight</div>
+                <div class="card-body">
+                    <table class="table table-striped table-bordered">
+                        <tr>
+                            <th>house</th>
+                            <th>Academic Achievement</th>
+                            <th>attendance</th>
+                            <th>growthMindset</th>
+                            <th>effort</th>
+                            <th>manbox</th>
+                            <th>contrained masculinity</th>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(insightList)}">
+                            <td colspan="5">No Records found. Add some...!</td>
+                        </tr>
+                        <tr th:each="insight : ${insightList}">
+                            <td th:text="${insight.house}"></td>
+                            <td th:text="${insight.Perc_Academic}"></td>
+                            <td th:text="${insight.attendance}"></td>
+                            <td th:text="${insight.growthMindset}"></td>
+                            <td th:text="${insight.perc_effort}"></td>
+                            <td th:text="${insight.manbox5_overall}"></td>
+                            <td th:text="${insight.masculinity_contrained}"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
