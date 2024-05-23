@@ -1,28 +1,15 @@
 package com.swinburne.studentsurvey.domain;
 
+import java.util.List;
+
 public class Feedback {
     private Long participantId;
+    private Participant participant;
     private Long target;
     private String surveyDate;
-    private Participant participant;
-    private Participant participantT;
+    private List<Participant> tolist;
+    private List<Participant> fromlist;
     public Feedback() {
-    }
-
-    public Participant getParticipant() {
-        return participant;
-    }
-
-    public void setParticipant(Participant participant) {
-        this.participant = participant;
-    }
-
-    public Participant getParticipantT() {
-        return participantT;
-    }
-
-    public void setParticipantT(Participant participantT) {
-        this.participantT = participantT;
     }
 
     public Long getParticipantId() {
@@ -31,6 +18,14 @@ public class Feedback {
 
     public void setParticipantId(Long participantId) {
         this.participantId = participantId;
+    }
+
+    public Participant getParticipant() {
+        return participant;
+    }
+
+    public void setParticipant(Participant participant) {
+        this.participant = participant;
     }
 
     public Long getTarget() {
@@ -47,5 +42,21 @@ public class Feedback {
 
     public void setSurveyDate(String surveyDate) {
         this.surveyDate = surveyDate;
+    }
+
+    public List<Participant> getTolist() {
+        return tolist;
+    }
+
+    public void setTolist(List<Participant> tolist) {
+        this.tolist = tolist;
+    }
+
+    public List<Participant> getFromlist() {
+        return fromlist;
+    }
+
+    public void setFromlist(List<Participant> fromlist) {
+        this.fromlist = fromlist;
     }
 }

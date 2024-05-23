@@ -39,7 +39,8 @@
           var chart = root.container.children.push(
             am5percent.PieChart.new(root, {
               endAngle: 270,
-              radius: am5.percent(50)
+              radius: am5.percent(50),
+              layout: root.horizontalLayout
             })
           );
 
@@ -47,6 +48,8 @@
             am5percent.PieSeries.new(root, {
               valueField: "value",
               categoryField: "category",
+              legendLabelText: "{category}",
+              legendValueText: "{value}",
               endAngle: 270
             })
           );
@@ -56,29 +59,50 @@
           });
 
           series.data.setAll(monthData);
+          series.labels.template.set("forceHidden", true);
+          series.ticks.template.set("forceHidden", true);
+        // Add legend
+        var legend = chart.children.push(am5.Legend.new(root, {
+          centerY: am5.percent(50),
+          y: am5.percent(50),
+          layout: root.verticalLayout,
+          height: am5.percent(100),
+          verticalScrollbar: am5.Scrollbar.new(root, {
+            orientation: "vertical"
+          })
+        }));
 
-          series.appear(1000, 100);
+        legend.data.setAll(series.dataItems);
+
+        series.slices.template.set('tooltipText', '{category}: {value}');
+        series.labels.template.set('text', '{category}: {value}');
+
+        series.appear(1000, 100);
 
         });
 
+//house
         var participantList = /*[[${participantList}]]*/;
         var groupedData = {};
         participantList.forEach(item => {
           if (!groupedData[item.house]) {
             groupedData[item.house] = [];
           }
-          groupedData[item.house].push({ name: item.firstName + ' ' + item.lastName, value: item.id });
+          groupedData[item.house].push({ name: item.firstName + ' ' + item.lastName, value: item.id, url: '/admin/select/' + item.id});
         });
 
         var result = [];
         for (var house in groupedData) {
-          result.push({ name: house, children: groupedData[house] });
+          if (groupedData.hasOwnProperty(house)) {
+            var houseValue = groupedData[house].length; // Count the number of participants in the house
+            result.push({ name: house, children: groupedData[house], value: houseValue }); // Add the count to the house node
+          }
         }
-
         var finalResult = [{
           name: "House",
           children: result
         }];
+
         am5.ready(function() {
         var root = am5.Root.new("nodeChartDiv");
 
@@ -107,12 +131,28 @@
         series.data.setAll(finalResult);
         series.set("selectedDataItem", series.dataItems[0]);
 
+       // series.nodes.template.set("tooltipText", "{category} : {value}");
+        //series.labels.template.set("text", "{category} : {value}");
+
         container.children.unshift(
           am5hierarchy.BreadcrumbBar.new(root, {
             series: series
           })
         );
+            // Ensure the nodes are created and clickable
+        series.events.on("datavalidated", function() {
+            series.nodes.each(function(node) {
+                node.events.on("click", function(event) {
+                    var nodeData = event.target.dataItem.dataContext;
+                    if (nodeData.url) {
+                        window.open(nodeData.url, "_blank");
+                    }
+                });
+            });
         });
+
+        });
+
       function top10select() {
             var topType = $("#selectType").val();
             var surveyDate = $("#surveyDate").val();
@@ -131,7 +171,7 @@
 
     <!-- Links -->
     <form class="form-inline" method="post" th:action="@{/admin/search}" th:object="${participant}">
-        <input class="form-control mr-sm-2" type="text" th:field="*{id}" placeholder="Search">
+        <input class="form-control mr-sm-2" type="hidden" th:field="*{id}" placeholder="Search">
         <div class="form-group">
             <label for="surveyDate">Filter By Semester:</label>
             <select class="form-control" id="surveyDate" th:field="*{surveyDate}">
@@ -145,7 +185,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-7">
             <div class="card">
                 <div class="card-header bg-info"><h4>Affiliation Groups</h4></div>
                 <div class="card-body">
@@ -153,7 +193,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-5">
             <div class="card">
                 <div class="card-header bg-info"><h4>Houses</h4></div>
                 <div class="card-body">
@@ -163,16 +203,19 @@
         </div>
     </div>
     <div class="row mt-3">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header bg-info"><h4>Top 10</h4></div>
                 <div class="card-body"><div class="form-group">
                     <label for="selectType">Filter By type:</label>
                     <select class="form-control" id="selectType" onchange="top10select(this)">
-                        <option value="betweenness_centrality">Betweenness centrality</option>
                         <option value="Clustering">Clustering</option>
+                        <option value="betweenness_centrality">Betweenness centrality</option>
                         <option value="in_degree_centrality">In degree centrality</option>
                         <option value="out_degree_centrality">Out degree centrality</option>
+                        <option value="eigenvector_centrality">Eigenvector centrality</option>
+                        <option value="closeness_centrality">Closeness centrality</option>
+                        <option value="nodeReciprocity">NodeReciprocity</option>
                     </select>
                 </div>
                     <div id="top10" th:fragment="top10" class="tab-content">
@@ -191,9 +234,9 @@
                     </div></div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
-                <div class="card-header bg-info">Overall Insight</div>
+                <div class="card-header bg-info"><h4>Overall Insight</h4></div>
                 <div class="card-body">
                     <table class="table table-striped table-bordered">
                         <tr>
@@ -204,9 +247,6 @@
                             <th>effort</th>
                             <th>manbox</th>
                             <th>contrained masculinity</th>
-                        </tr>
-                        <tr th:if="${#lists.isEmpty(insightList)}">
-                            <td colspan="5">No Records found. Add some...!</td>
                         </tr>
                         <tr th:each="insight : ${insightList}">
                             <td th:text="${insight.house}"></td>

@@ -596,17 +596,6 @@
     <!-- Links -->
     <ul class="navbar-nav">
     </ul>
-    <!-- Links -->
-    <form class="form-inline" method="post" th:action="@{/student/search}" th:object="${participant}">
-        <div class="form-group">
-            <label for="surveyDate">Filter By Semester:</label>
-            <select class="form-control" id="surveyDate" th:field="*{surveyDate}">
-                <option value="2023-01-01 00:00:00">January 2023</option>
-                <option value="2023-07-01 00:00:00">July 2023</option>
-            </select>
-        </div>
-        <button class="btn btn-success" type="submit">Search</button>
-    </form>
 </nav>
 
 <div class="container-fluid">

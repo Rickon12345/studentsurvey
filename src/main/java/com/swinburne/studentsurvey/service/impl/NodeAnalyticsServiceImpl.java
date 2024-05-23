@@ -22,7 +22,9 @@ public class NodeAnalyticsServiceImpl implements NodeAnalyticsService {
     public List<NodeAnalytics> findNodeAnalyticsBySurveyDate(String surveyDate) {
         return this.nodeAnalyticsDao.findNodeAnalyticsBySurveyDate(surveyDate);
     }
-
+    public NodeAnalytics findNodeAnalyticsByParticipantId(Long id){
+        return this.nodeAnalyticsDao.findNodeAnalyticsByParticipantId(id);
+    }
     public List<NodeAnalytics> findTopBySurveyDateAndType(String surveyDate, String type) {
         return this.nodeAnalyticsDao.findTopBySurveyDateAndType(surveyDate, type);
     }

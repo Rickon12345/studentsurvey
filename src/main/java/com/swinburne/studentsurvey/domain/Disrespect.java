@@ -7,7 +7,8 @@ public class Disrespect {
     private Participant participant;
     private Long target;
     private String surveyDate;
-    private List<Participant> list;
+    private List<Participant> tolist;
+    private List<Participant> fromlist;
     public Disrespect() {
     }
 
@@ -43,11 +44,19 @@ public class Disrespect {
         this.surveyDate = surveyDate;
     }
 
-    public List<Participant> getList() {
-        return list;
+    public List<Participant> getTolist() {
+        return tolist;
     }
 
-    public void setList(List<Participant> list) {
-        this.list = list;
+    public void setTolist(List<Participant> tolist) {
+        this.tolist = tolist;
+    }
+
+    public List<Participant> getFromlist() {
+        return fromlist;
+    }
+
+    public void setFromlist(List<Participant> fromlist) {
+        this.fromlist = fromlist;
     }
 }

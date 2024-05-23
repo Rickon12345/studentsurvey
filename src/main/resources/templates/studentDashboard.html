@@ -17,39 +17,62 @@
     <script src="https://cdn.amcharts.com/lib/5/fonts/notosans-sc.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
     <style>
-#friendChartdiv {
-  width: 100%;
-  max-width: 100%;
-  height: 450px;
-}
-#influentialChartdiv {
-  width: 100%;
-  max-width: 100%;
-  height: 600px;
-}
-#disrespectChartdiv {
-  width: 100%;
-  max-width: 100%;
-  height: 600px;
-}
-#avgChartdiv {
-  width: 100%;
-  max-width: 100%;
-  height: 600px;
-}
+    #friendChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
+    #influentialChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
+    #disrespectChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
+    #feedbackChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
+    #moretimeChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
+    #adviceChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
+    #avgChartdiv {
+      width: 100%;
+      max-width: 100%;
+      height: 465px;
+    }
     </style>
     <script th:inline="javascript">
         //friends
         var friendsData = /*[[${friends}]]*/;
         var convertedData = {
-          name: friendsData.participant.firstName + ' ' + friendsData.participant.lastName,
-          value: friendsData.participantId,
-          children: friendsData.list.map(item => ({
-            name: item.firstName + ' ' + item.lastName,
-            value: item.id
-          }))
+            name: friendsData.participant.firstName + ' ' + friendsData.participant.lastName,
+            value: friendsData.participantId,
+            nodeSettings: {fill: am5.color(0x297373)},
+            children: [
+                ...friendsData.fromlist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0x20B2AA)}
+                })),
+                ...friendsData.tolist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0xFF6347)}
+                }))
+            ]
         };
-
         am5.ready(function() {
             var root = am5.Root.new("friendChartdiv");
 
@@ -64,40 +87,44 @@
               height: am5.percent(100),
               layout: root.verticalLayout
             }));
+
             var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
                 downDepth: 1,
                 initialDepth: 1,
                 topDepth: 0,
-                maxRadius: 40,
-                minRadius: 22,
+                maxRadius: 35,
+                minRadius: 25,
                 valueField: "value",
                 categoryField: "name",
-                childDataField: "children",
-                idField: "name",
-                linkWithStrength: 0.3,
-                linkWithField: "linkWith",
-                manyBodyStrength: -15,
-                centerStrength: 0.5
+                childDataField: "children"
             }));
 
-            series.get("colors").setAll({
-              step: 2
+            series.circles.template.setAll({
+              templateField: "nodeSettings"
             });
 
-            series.links.template.set("strength", 1);
             series.data.setAll([data]);
             series.set("selectedDataItem", series.dataItems[0]);
-            series.appear(1000, 100);
             });
-//influential
+
+        //influential
         var influentialData = /*[[${influential}]]*/;
         var influentialConvertedData = {
-          name: influentialData.participant.firstName + ' ' + influentialData.participant.lastName,
-          value: influentialData.participantId,
-          children: influentialData.list.map(item => ({
-            name: item.firstName + ' ' + item.lastName,
-            value: item.id
-          }))
+            name: influentialData.participant.firstName + ' ' + influentialData.participant.lastName,
+            value: influentialData.participantId,
+            nodeSettings: {fill: am5.color(0x297373)},
+            children: [
+                ...influentialData.fromlist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0x20B2AA)}
+                })),
+                ...influentialData.tolist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0xFF6347)}
+                }))
+            ]
         };
 
         am5.ready(function() {
@@ -114,40 +141,44 @@
               height: am5.percent(100),
               layout: root.verticalLayout
             }));
+
             var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
                 downDepth: 1,
                 initialDepth: 1,
                 topDepth: 0,
-                maxRadius: 40,
-                minRadius: 22,
+                maxRadius: 35,
+                minRadius: 25,
                 valueField: "value",
                 categoryField: "name",
-                childDataField: "children",
-                idField: "name",
-                linkWithStrength: 0.3,
-                linkWithField: "linkWith",
-                manyBodyStrength: -15,
-                centerStrength: 0.5
+                childDataField: "children"
             }));
 
-            series.get("colors").setAll({
-              step: 2
+            series.circles.template.setAll({
+              templateField: "nodeSettings"
             });
 
-            series.links.template.set("strength", 1);
             series.data.setAll([data]);
             series.set("selectedDataItem", series.dataItems[0]);
-            series.appear(1000, 100);
             });
-//disrespect
+
+        //disrespect
         var disrespectData = /*[[${disrespect}]]*/;
         var disrespectConvertedData = {
-          name: disrespectData.participant.firstName + ' ' + disrespectData.participant.lastName,
-          value: disrespectData.participantId,
-          children: disrespectData.list.map(item => ({
-            name: item.firstName + ' ' + item.lastName,
-            value: item.id
-          }))
+            name: disrespectData.participant.firstName + ' ' + disrespectData.participant.lastName,
+            value: disrespectData.participantId,
+            nodeSettings: {fill: am5.color(0x297373)},
+            children: [
+                ...disrespectData.fromlist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0x20B2AA)}
+                })),
+                ...disrespectData.tolist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0xFF6347)}
+                }))
+            ]
         };
 
         am5.ready(function() {
@@ -164,30 +195,186 @@
               height: am5.percent(100),
               layout: root.verticalLayout
             }));
+
             var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
                 downDepth: 1,
                 initialDepth: 1,
                 topDepth: 0,
-                maxRadius: 40,
-                minRadius: 22,
+                maxRadius: 35,
+                minRadius: 25,
                 valueField: "value",
                 categoryField: "name",
-                childDataField: "children",
-                idField: "name",
-                linkWithStrength: 0.3,
-                linkWithField: "linkWith",
-                manyBodyStrength: -15,
-                centerStrength: 0.5
+                childDataField: "children"
             }));
 
-            series.get("colors").setAll({
-              step: 2
+            series.circles.template.setAll({
+              templateField: "nodeSettings"
             });
 
-            series.links.template.set("strength", 1);
             series.data.setAll([data]);
             series.set("selectedDataItem", series.dataItems[0]);
-            series.appear(1000, 100);
+            });
+
+        //feedback
+        var feedbackData = /*[[${feedback}]]*/;
+        var feedbackConvertedData = {
+            name: feedbackData.participant.firstName + ' ' + feedbackData.participant.lastName,
+            value: feedbackData.participantId,
+            nodeSettings: {fill: am5.color(0x297373)},
+            children: [
+                ...feedbackData.fromlist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0x20B2AA)}
+                })),
+                ...feedbackData.tolist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0xFF6347)}
+                }))
+            ]
+        };
+
+        am5.ready(function() {
+            var root = am5.Root.new("feedbackChartdiv");
+
+            root.setThemes([
+              am5themes_Animated.new(root)
+            ]);
+
+            var data = feedbackConvertedData;
+
+            var container = root.container.children.push(am5.Container.new(root, {
+              width: am5.percent(100),
+              height: am5.percent(100),
+              layout: root.verticalLayout
+            }));
+
+            var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+                downDepth: 1,
+                initialDepth: 1,
+                topDepth: 0,
+                maxRadius: 35,
+                minRadius: 25,
+                valueField: "value",
+                categoryField: "name",
+                childDataField: "children"
+            }));
+
+            series.circles.template.setAll({
+              templateField: "nodeSettings"
+            });
+
+            series.data.setAll([data]);
+            series.set("selectedDataItem", series.dataItems[0]);
+            });
+
+        //moretime
+        var moretimeData = /*[[${moretime}]]*/;
+        var moretimeConvertedData = {
+            name: moretimeData.participant.firstName + ' ' + moretimeData.participant.lastName,
+            value: moretimeData.participantId,
+            nodeSettings: {fill: am5.color(0x297373)},
+            children: [
+                ...moretimeData.fromlist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0x20B2AA)}
+                })),
+                ...moretimeData.tolist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0xFF6347)}
+                }))
+            ]
+        };
+
+        am5.ready(function() {
+            var root = am5.Root.new("moretimeChartdiv");
+
+            root.setThemes([
+              am5themes_Animated.new(root)
+            ]);
+
+            var data = moretimeConvertedData;
+
+            var container = root.container.children.push(am5.Container.new(root, {
+              width: am5.percent(100),
+              height: am5.percent(100),
+              layout: root.verticalLayout
+            }));
+
+            var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+                downDepth: 1,
+                initialDepth: 1,
+                topDepth: 0,
+                maxRadius: 35,
+                minRadius: 25,
+                valueField: "value",
+                categoryField: "name",
+                childDataField: "children"
+            }));
+
+            series.circles.template.setAll({
+              templateField: "nodeSettings"
+            });
+
+            series.data.setAll([data]);
+            series.set("selectedDataItem", series.dataItems[0]);
+            });
+
+        //advice
+        var adviceData = /*[[${advice}]]*/;
+        var adviceConvertedData = {
+            name: adviceData.participant.firstName + ' ' + adviceData.participant.lastName,
+            value: adviceData.participantId,
+            nodeSettings: {fill: am5.color(0x297373)},
+            children: [
+                ...adviceData.fromlist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0x20B2AA)}
+                })),
+                ...adviceData.tolist.map(item => ({
+                    name: item.firstName + ' ' + item.lastName,
+                    value: item.id,
+                    nodeSettings: {fill: am5.color(0xFF6347)}
+                }))
+            ]
+        };
+
+        am5.ready(function() {
+            var root = am5.Root.new("adviceChartdiv");
+
+            root.setThemes([
+              am5themes_Animated.new(root)
+            ]);
+
+            var data = adviceConvertedData;
+
+            var container = root.container.children.push(am5.Container.new(root, {
+              width: am5.percent(100),
+              height: am5.percent(100),
+              layout: root.verticalLayout
+            }));
+
+            var series = container.children.push(am5hierarchy.ForceDirected.new(root, {
+                downDepth: 1,
+                initialDepth: 1,
+                topDepth: 0,
+                maxRadius: 35,
+                minRadius: 25,
+                valueField: "value",
+                categoryField: "name",
+                childDataField: "children"
+            }));
+
+            series.circles.template.setAll({
+              templateField: "nodeSettings"
+            });
+
+            series.data.setAll([data]);
+            series.set("selectedDataItem", series.dataItems[0]);
             });
 
         //avg
@@ -411,7 +598,6 @@
     </ul>
     <!-- Links -->
     <form class="form-inline" method="post" th:action="@{/student/search}" th:object="${participant}">
-        participant id: <input class="form-control mr-sm-2" type="text" th:field="*{id}" placeholder="Search">
         <div class="form-group">
             <label for="surveyDate">Filter By Semester:</label>
             <select class="form-control" id="surveyDate" th:field="*{surveyDate}">
@@ -425,7 +611,7 @@
 
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="card">
                 <div class="card-header  bg-info"><h4>Student Information</h4></div>
                 <div class="card-body">
@@ -444,33 +630,63 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-header  bg-info"><h4>Network</h4></div>
                 <div class="card-body">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            <a class="nav-link active" id="friend-tab" data-toggle="tab" href="#friend" role="tab" aria-controls="friend" aria-selected="true">friends</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="influential-tab" data-toggle="tab" href="#influential" role="tab" aria-controls="influential" aria-selected="false">influential</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="disrespect-tab" data-toggle="tab" href="#disrespect" role="tab" aria-controls="disrespect" aria-selected="false">disrespect</a>
-                        </li>
-                    </ul>
-                    <div class="tab-content">
-                        <div class="tab-pane fade show active" id="friend" role="tabpanel" aria-labelledby="friend-tab">
-                            <h3>Friends</h3>
-                            <div class="card-body" id="friendChartdiv"></div>
+                    <div class="row">
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" id="friend-tab" data-toggle="tab" href="#friend" role="tab" aria-controls="friend" aria-selected="true">friends</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="influential-tab" data-toggle="tab" href="#influential" role="tab" aria-controls="influential" aria-selected="false">influential</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="disrespect-tab" data-toggle="tab" href="#disrespect" role="tab" aria-controls="disrespect" aria-selected="false">disrespect</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="feedback-tab" data-toggle="tab" href="#feedback" role="tab" aria-controls="feedback" aria-selected="false">feedback</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="moretime-tab" data-toggle="tab" href="#moretime" role="tab" aria-controls="moretime" aria-selected="false">moretime</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="advice-tab" data-toggle="tab" href="#advice" role="tab" aria-controls="advice" aria-selected="false">advice</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content col-md-8">
+                            <div class="tab-pane fade show active" id="friend" role="tabpanel" aria-labelledby="friend-tab">
+                                <div class="card-body" id="friendChartdiv"></div>
+                            </div>
+                            <div class="tab-pane fade" id="influential" role="tabpanel" aria-labelledby="influential-tab">
+                                <div class="card-body" id="influentialChartdiv"></div>
+                            </div>
+                            <div class="tab-pane fade" id="disrespect" role="tabpanel" aria-labelledby="disrespect-tab">
+                                <div class="card-body" id="disrespectChartdiv"></div>
+                            </div>
+                            <div class="tab-pane fade" id="feedback" role="tabpanel" aria-labelledby="feedback-tab">
+                                <div class="card-body" id="feedbackChartdiv"></div>
+                            </div>
+                            <div class="tab-pane fade" id="moretime" role="tabpanel" aria-labelledby="moretime-tab">
+                                <div class="card-body" id="moretimeChartdiv"></div>
+                            </div>
+                            <div class="tab-pane fade" id="advice" role="tabpanel" aria-labelledby="advice-tab">
+                                <div class="card-body" id="adviceChartdiv"></div>
+                            </div>
                         </div>
-                        <div class="tab-pane fade" id="influential" role="tabpanel" aria-labelledby="influential-tab">
-                            <h3>Influential</h3>
-                            <div class="card-body" id="influentialChartdiv"></div>
-                        </div>
-                        <div class="tab-pane fade" id="disrespect" role="tabpanel" aria-labelledby="disrespect-tab">
-                            <h3>Disrespect</h3>
-                            <div class="card-body" id="disrespectChartdiv"></div>
+                        <div class="col-md-4">
+                            <table class="table table-light table-hover">
+                                <tr><td>in</td><td th:text="${nodeAnalytics.nodeIn}"></td></tr>
+                                <tr><td>out</td><td th:text="${nodeAnalytics.nodeOut}"></td></tr>
+                                <tr><td>in degree centrality</td><td th:text="${nodeAnalytics.inDegree}"></td></tr>
+                                <tr><td>out degree centrality</td><td th:text="${nodeAnalytics.outDegree}"></td></tr>
+                                <tr><td>eigenvector centrality</td><td th:text="${nodeAnalytics.eigenvector}"></td></tr>
+                                <tr><td>betweenness centrality</td><td th:text="${nodeAnalytics.betweenness}"></td></tr>
+                                <tr><td>closeness centrality</td><td th:text="${nodeAnalytics.closeness}"></td></tr>
+                                <tr><td>Clustering</td><td th:text="${nodeAnalytics.Clustering}"></td></tr>
+                                <tr><td>nodeReciprocity</td><td th:text="${nodeAnalytics.nodeReciprocity}"></td></tr>
+                            </table>
                         </div>
                     </div>
                 </div>

@@ -31,24 +31,18 @@ public class ParticipantServiceImpl implements ParticipantService {
         return this.participantDao.findByStudentIdAndSemester(surveyDate,id);
     }
 
+    public Participant findByParticipantId(Long id){
+        return this.participantDao.findByParticipantId(id);
+    }
+
     public Friends findFriendByParticipantId(Participant p){
         Friends f = new Friends();
         f.setParticipantId(p.getId());
         f.setParticipant(p);
-        List<Participant> participants = this.participantDao.findFriendByParticipantId(p.getId());
-//        List<Friends> fl = new ArrayList<>();
-//        participants.forEach(i->{
-//            Friends friend = new Friends();
-//            friend.setParticipantId(i.getId());
-//            friend.setParticipant(i);
-//            List<Participant> fpl = this.participantDao.findFriendByParticipantId(i.getId());
-//            List<Friends> flChild = new ArrayList<>();
-//            fpl.forEach(j -> {Friends friendchild = new Friends(); friendchild.setParticipantId(j.getId()); friendchild.setParticipant(j);flChild.add(friendchild);});
-//            friend.setFl(flChild);
-//            fl.add(friend);
-//        });
-//        f.setFl(fl);
-        f.setList(participants);
+        List<Participant> fromParticipants = this.participantDao.findFromFriendByParticipantId(p.getId());
+        List<Participant> toParticipants = this.participantDao.findToFriendByParticipantId(p.getId());
+        f.setFromlist(fromParticipants);
+        f.setTolist(toParticipants);
         return f;
     }
 
@@ -56,16 +50,54 @@ public class ParticipantServiceImpl implements ParticipantService {
         Influential f = new Influential();
         f.setParticipantId(p.getId());
         f.setParticipant(p);
-        List<Participant> participants = this.participantDao.findInfluentialByParticipantId(p.getId());
-        f.setList(participants);
+        List<Participant> fromParticipants = this.participantDao.findFromInfluentialByParticipantId(p.getId());
+        List<Participant> toParticipants = this.participantDao.findFromInfluentialByParticipantId(p.getId());
+        f.setFromlist(fromParticipants);
+        f.setTolist(toParticipants);
         return f;
     }
+
+    public Feedback findFeedbackByParticipantId(Participant p){
+        Feedback f = new Feedback();
+        f.setParticipantId(p.getId());
+        f.setParticipant(p);
+        List<Participant> fromParticipants = this.participantDao.findFromFeedbackByParticipantId(p.getId());
+        List<Participant> toParticipants = this.participantDao.findToFeedbackByParticipantId(p.getId());
+        f.setFromlist(fromParticipants);
+        f.setTolist(toParticipants);
+        return f;
+    }
+
     public Disrespect findDisrespectByParticipantId(Participant p){
         Disrespect f = new Disrespect();
         f.setParticipantId(p.getId());
         f.setParticipant(p);
-        List<Participant> participants = this.participantDao.findDisrespectByParticipantId(p.getId());
-        f.setList(participants);
+        List<Participant> fromParticipants = this.participantDao.findFromDisrespectByParticipantId(p.getId());
+        List<Participant> toParticipants = this.participantDao.findToDisrespectByParticipantId(p.getId());
+        f.setFromlist(fromParticipants);
+        f.setTolist(toParticipants);
+        return f;
+    }
+
+    public Advice findAdviceByParticipantId(Participant p){
+        Advice f = new Advice();
+        f.setParticipantId(p.getId());
+        f.setParticipant(p);
+        List<Participant> fromParticipants = this.participantDao.findFromAdviceByParticipantId(p.getId());
+        List<Participant> toParticipants = this.participantDao.findToAdviceByParticipantId(p.getId());
+        f.setFromlist(fromParticipants);
+        f.setTolist(toParticipants);
+        return f;
+    }
+
+    public Moretime findMoreTimeByParticipantId(Participant p){
+        Moretime f = new Moretime();
+        f.setParticipantId(p.getId());
+        f.setParticipant(p);
+        List<Participant> fromParticipants = this.participantDao.findFromMoreTimeByParticipantId(p.getId());
+        List<Participant> toParticipants = this.participantDao.findToMoreTimeByParticipantId(p.getId());
+        f.setFromlist(fromParticipants);
+        f.setTolist(toParticipants);
         return f;
     }
 }

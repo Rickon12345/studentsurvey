@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface NodeAnalyticsService {
     public List<NodeAnalytics> findNodeAnalyticsBySurveyDate(String surveyDate);
-
+    public NodeAnalytics findNodeAnalyticsByParticipantId(Long id);
     public List<NodeAnalytics> findTopBySurveyDateAndType(String surveyDate, String type);
 
 }

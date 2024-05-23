@@ -22,6 +22,9 @@ public class ResponseServiceImpl implements ResponseService {
     public Response findByStudentIdAndSemester(String surveyDate, Long id) {
         return responseDao.findByStudentIdAndSemester(surveyDate, id);
     }
+    public Response findByParticipantId(Long id){
+        return responseDao.findByParticipantId(id);
+    }
     public Response findClassAvg(String surveyDate, String house) {
         return responseDao.findClassAvg(surveyDate, house);
     }

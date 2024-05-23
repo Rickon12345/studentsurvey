@@ -22,6 +22,8 @@ public class StudentController {
     @Autowired
     private ResponseService responseService;
     @Autowired
+    private NodeAnalyticsService nodeAnalyticsService;
+    @Autowired
     private StudentCourseService studentCourseService;
     @Autowired
     private StudentClassService studentClassService;
@@ -40,9 +42,16 @@ public class StudentController {
     @GetMapping("/")
     public String getIndex(Model model) {
         session = null;
+        return "homepage";
+    }
+
+    @GetMapping("/student/login")
+    public String studentLogin(Model model) {
+        session = null;
         model.addAttribute("student", new Student());
         return "studentLogin";
     }
+
 
     @PostMapping("/student/login")
     public String studentLogin(@ModelAttribute Student student, Model model) {
@@ -53,9 +62,13 @@ public class StudentController {
             model.addAttribute("student", studentInfo);
             Participant participant = this.participantService.findByStudentIdAndSemester("2023-01-01 00:00:00", studentInfo.getId());
             model.addAttribute("participant", participant);
+            model.addAttribute("nodeAnalytics", this.nodeAnalyticsService.findNodeAnalyticsByParticipantId(participant.getId()));
             model.addAttribute("friends", this.participantService.findFriendByParticipantId(participant));
             model.addAttribute("influential", this.participantService.findInfluentialByParticipantId(participant));
             model.addAttribute("disrespect", this.participantService.findDisrespectByParticipantId(participant));
+            model.addAttribute("feedback", this.participantService.findFeedbackByParticipantId(participant));
+            model.addAttribute("moretime", this.participantService.findMoreTimeByParticipantId(participant));
+            model.addAttribute("advice", this.participantService.findAdviceByParticipantId(participant));
             model.addAttribute("response",this.responseService.findByStudentIdAndSemester("2023-01-01 00:00:00", studentInfo.getId()));
             model.addAttribute("classAvg",this.responseService.findClassAvg("2023-01-01 00:00:00", participant.getHouse()));
             model.addAttribute("schoolAvg",this.responseService.findSchoolAvg("2023-01-01 00:00:00"));
@@ -73,9 +86,13 @@ public class StudentController {
         Long studentId = (Long) session.getAttribute("studentId");
         Participant participant1 = this.participantService.findByStudentIdAndSemester(participant.getSurveyDate(), studentId);
         model.addAttribute("participant", participant1);
+        model.addAttribute("nodeAnalytics", this.nodeAnalyticsService.findNodeAnalyticsByParticipantId(participant1.getId()));
         model.addAttribute("friends", this.participantService.findFriendByParticipantId(participant1));
         model.addAttribute("influential", this.participantService.findInfluentialByParticipantId(participant1));
         model.addAttribute("disrespect", this.participantService.findDisrespectByParticipantId(participant1));
+        model.addAttribute("feedback", this.participantService.findFeedbackByParticipantId(participant1));
+        model.addAttribute("moretime", this.participantService.findMoreTimeByParticipantId(participant1));
+        model.addAttribute("advice", this.participantService.findAdviceByParticipantId(participant1));
         model.addAttribute("response",this.responseService.findByStudentIdAndSemester(participant1.getSurveyDate(), studentId));
         model.addAttribute("classAvg",this.responseService.findClassAvg(participant1.getSurveyDate(), participant1.getHouse()));
         model.addAttribute("schoolAvg",this.responseService.findSchoolAvg(participant1.getSurveyDate()));

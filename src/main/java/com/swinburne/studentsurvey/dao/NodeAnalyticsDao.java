@@ -28,6 +28,16 @@ public class NodeAnalyticsDao {
         return this.jdbcTemplate.query(sql, new NodeAnalyticsDao.NodeAnalyticsRowMapper(), new Object[]{surveyDate});
     }
 
+    public NodeAnalytics findNodeAnalyticsByParticipantId(Long id) {
+        String sql = "SELECT n.node_Id,n.node_Label,n.node_in,n.node_out,n.in_degree_centrality,n.out_degree_centrality," +
+                "n.eigenvector_centrality,n.betweenness_centrality,n.closeness_centrality,n.Clustering,n.nodeReciprocity," +
+                "n.Community ,n.survey_date, p.email,p.first_name, p.last_name, p.contact_number " +
+                "FROM nodesAnalytics n join participant p on p.id=n.node_Label where n.node_Label=?";
+        List<NodeAnalytics> list = this.jdbcTemplate.query(sql, new NodeAnalyticsDao.NodeAnalyticsRowMapper(), id);
+        return  list != null && list.size() > 0 ? (NodeAnalytics)list.get(0) : null;
+    }
+
+
     public List<NodeAnalytics> findTopBySurveyDateAndType(String surveyDate, String type) {
         String sql = "SELECT n.node_Id,n.node_Label,n.node_in,n.node_out,n.in_degree_centrality,n.out_degree_centrality," +
                 "n.eigenvector_centrality,n.betweenness_centrality,n.closeness_centrality,n.Clustering,n.nodeReciprocity," +

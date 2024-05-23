@@ -1,10 +1,7 @@
 package com.swinburne.studentsurvey.controller;
 
 import com.swinburne.studentsurvey.domain.*;
-import com.swinburne.studentsurvey.service.CourseService;
-import com.swinburne.studentsurvey.service.ParticipantService;
-import com.swinburne.studentsurvey.service.TeacherCourseService;
-import com.swinburne.studentsurvey.service.TeacherService;
+import com.swinburne.studentsurvey.service.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +17,17 @@ public class TeacherController {
     @Autowired
     private TeacherService teacherService;
     @Autowired
+    private StudentService studentService;
+    @Autowired
     private TeacherCourseService teacherCourseService;
     @Autowired
     private CourseService courseService;
     @Autowired
     private ParticipantService participantService;
+    @Autowired
+    private ResponseService responseService;
+    @Autowired
+    private NodeAnalyticsService nodeAnalyticsService;
     @Autowired
     HttpServletRequest request;
 
@@ -47,9 +50,13 @@ public class TeacherController {
             session = request.getSession();
             session.setAttribute("teacherId",teacherInfo.getId());
             model.addAttribute("teacher", teacherInfo);
-            List<TeacherCourse> list = this.teacherCourseService.findTeacherCourseByTeacherId(teacherInfo.getId());
-            model.addAttribute("teacherCourses", list);
-            return "classDashboard";
+            Participant participant = new Participant();
+            model.addAttribute("participant", participant);
+            Response response = new Response();
+            model.addAttribute("response",response);
+            NodeAnalytics nodeAnalytics = new NodeAnalytics();
+            model.addAttribute("nodeAnalytics",nodeAnalytics);
+            return "teacherDashboard";
         }else{
             model.addAttribute("teacher", new Teacher());
             return "teacherLogin";
@@ -58,9 +65,19 @@ public class TeacherController {
 
     @PostMapping("/teacher/search")
     public String studentSearch(@ModelAttribute Participant participant, Model model) {
-        model.addAttribute("participant", participant);
-        model.addAttribute("friends", this.participantService.findFriendByParticipantId(participant));
-        return "classDashboard";
+        Participant participant1 = this.participantService.findByParticipantId(participant.getId());
+        model.addAttribute("participant", participant1);
+        model.addAttribute("nodeAnalytics", this.nodeAnalyticsService.findNodeAnalyticsByParticipantId(participant1.getId()));
+        model.addAttribute("friends", this.participantService.findFriendByParticipantId(participant1));
+        model.addAttribute("influential", this.participantService.findInfluentialByParticipantId(participant1));
+        model.addAttribute("disrespect", this.participantService.findDisrespectByParticipantId(participant1));
+        model.addAttribute("feedback", this.participantService.findFeedbackByParticipantId(participant1));
+        model.addAttribute("moretime", this.participantService.findMoreTimeByParticipantId(participant1));
+        model.addAttribute("advice", this.participantService.findAdviceByParticipantId(participant1));
+        model.addAttribute("response",this.responseService.findByParticipantId(participant.getId()));
+        model.addAttribute("classAvg",this.responseService.findClassAvg(participant1.getSurveyDate(), participant1.getHouse()));
+        model.addAttribute("schoolAvg",this.responseService.findSchoolAvg(participant1.getSurveyDate()));
+        return "teacherDashboard";
     }
 
     @GetMapping("/teacher/register")

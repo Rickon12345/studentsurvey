@@ -9,7 +9,8 @@ public class Friends {
     private Long target;
     private String surveyDate;
     //private List<Friends> fl;
-    private List<Participant> list;
+    private List<Participant> tolist;
+    private List<Participant> fromlist;
     public Friends() {
     }
 
@@ -21,12 +22,20 @@ public class Friends {
         this.participant = participant;
     }
 
-    public List<Participant> getList() {
-        return list;
+    public List<Participant> getTolist() {
+        return tolist;
     }
 
-    public void setList(List<Participant> list) {
-        this.list = list;
+    public void setTolist(List<Participant> tolist) {
+        this.tolist = tolist;
+    }
+
+    public List<Participant> getFromlist() {
+        return fromlist;
+    }
+
+    public void setFromlist(List<Participant> fromlist) {
+        this.fromlist = fromlist;
     }
 
     public Long getParticipantId() {

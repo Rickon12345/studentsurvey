@@ -20,6 +20,13 @@ public class ParticipantDao {
     public ParticipantDao() {
     }
 
+    public Participant findByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM participant p where p.id = ?";
+        List<Participant> list = this.jdbcTemplate.query(sql, new ParticipantRowMapper(), id);
+        return  list != null && list.size() > 0 ? (Participant) list.get(0) : null;
+    }
+
     public List<Participant> findByStudentId(Long id) {
         String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
                 " FROM participant p join survey s on p.id = s.participant_id " +
@@ -41,24 +48,77 @@ public class ParticipantDao {
         return  list != null && list.size() > 0 ? (Participant)list.get(0) : null;
     }
 
-    public List<Participant> findFriendByParticipantId(Long id) {
+    public List<Participant> findFromFriendByParticipantId(Long id) {
         String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
-                " FROM friends f join participant p on p.id=f.target where participant_id=?";
+                " FROM friends f join participant p on p.id=f.target where f.participant_id=?";
         return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
     }
-    public List<Participant> findInfluentialByParticipantId(Long id) {
+
+    public List<Participant> findToFriendByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM friends f join participant p on p.id=f.participant_id where f.target=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findFromInfluentialByParticipantId(Long id) {
         String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
                 " FROM influential f join participant p on p.id=f.target where participant_id=?";
         return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
     }
 
-    public List<Participant> findDisrespectByParticipantId(Long id) {
+    public List<Participant> findToInfluentialByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM influential f join participant p on p.id=f.participant_id where target=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findFromDisrespectByParticipantId(Long id) {
         String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
                 " FROM disrespect f join participant p on p.id=f.target where participant_id=?";
         return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
     }
 
+    public List<Participant> findToDisrespectByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM disrespect f join participant p on p.id=f.participant_id where target=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
 
+    public List<Participant> findFromFeedbackByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM feedback f join participant p on p.id=f.target where participant_id=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findToFeedbackByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM feedback f join participant p on p.id=f.participant_id where target=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findFromMoreTimeByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM moretime f join participant p on p.id=f.target where participant_id=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findToMoreTimeByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM moretime f join participant p on p.id=f.participant_id where target=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findFromAdviceByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM advice f join participant p on p.id=f.target where participant_id=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
+
+    public List<Participant> findToAdviceByParticipantId(Long id) {
+        String sql = "SELECT p.id,p.first_name,p.last_name,p.email,contact_number,perc_effort,attendance,Perc_Academic,CompleteYears,House,p.survey_date" +
+                " FROM advice f join participant p on p.id=f.participant_id where target=?";
+        return this.jdbcTemplate.query(sql, new ParticipantDao.ParticipantRowMapper(), new Object[]{id});
+    }
 
     class ParticipantRowMapper implements RowMapper<Participant> {
         ParticipantRowMapper() {

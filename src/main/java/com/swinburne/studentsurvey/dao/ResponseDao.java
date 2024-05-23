@@ -28,6 +28,14 @@ public class ResponseDao {
         return  list != null && list.size() > 0 ? (Response)list.get(0) : null;
     }
 
+    public Response findByParticipantId(Long id) {
+        String sql = "SELECT r.instance_id,r.participant_id,r.status,r.manbox5_overall,r.bullying,r.growthMindset,r.candidate_perc_effort,r.comfortable,r.COVID, " +
+                "r.pwi_wellbeing,r.isolated,r.comments,r.survey_date " +
+                "FROM response r where r.participant_id = ?";
+        List<Response> list = this.jdbcTemplate.query(sql, new ResponseRowMapper(), id);
+        return  list != null && list.size() > 0 ? (Response)list.get(0) : null;
+    }
+
     public Response findClassAvg(String surveyDate, String house) {
         String sql = "SELECT 0 as instance_id, 0 as participant_id, '' as comments, '' as status, ROUND(AVG(r.manbox5_overall), 2) as manbox5_overall,ROUND(AVG(r.bullying), 2) as bullying,ROUND(AVG(r.growthMindset), 2) as growthMindset," +
                 "ROUND(AVG(r.candidate_perc_effort), 2) as candidate_perc_effort,ROUND(AVG(r.comfortable), 2) as comfortable," +

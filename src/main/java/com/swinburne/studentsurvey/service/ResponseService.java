@@ -8,6 +8,7 @@ import java.util.List;
 @Service
 public interface ResponseService {
     public Response findByStudentIdAndSemester(String surveyDate, Long id);
+    public Response findByParticipantId(Long id);
     public Response findClassAvg(String surveyDate, String house);
     public Response findSchoolAvg(String surveyDate);
 

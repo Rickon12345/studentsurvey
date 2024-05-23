@@ -2,6 +2,7 @@ package com.swinburne.studentsurvey.controller;
 
 import com.swinburne.studentsurvey.domain.*;
 import com.swinburne.studentsurvey.service.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -33,7 +34,10 @@ public class AdminController {
     private ParticipantService participantService;
     @Autowired
     private InsightService insightService;
-
+    @Autowired
+    private ResponseService responseService;
+    @Autowired
+    HttpServletRequest request;
 
     public AdminController() {
     }
@@ -90,6 +94,23 @@ public class AdminController {
         model.addAttribute("topList", tlist);
         model.addAttribute("insightList", this.insightService.findInsightBySemester(participant.getSurveyDate()));
         return "schoolDashboard";
+    }
+
+    @GetMapping("/admin/select/{participantId}")
+    public String studentClassCreate(@PathVariable("participantId") String participantId, Model model) {
+        Participant participant = this.participantService.findByParticipantId(Long.valueOf(participantId));
+        model.addAttribute("participant", participant);
+        model.addAttribute("nodeAnalytics", this.nodeAnalyticsService.findNodeAnalyticsByParticipantId(participant.getId()));
+        model.addAttribute("friends", this.participantService.findFriendByParticipantId(participant));
+        model.addAttribute("influential", this.participantService.findInfluentialByParticipantId(participant));
+        model.addAttribute("disrespect", this.participantService.findDisrespectByParticipantId(participant));
+        model.addAttribute("feedback", this.participantService.findFeedbackByParticipantId(participant));
+        model.addAttribute("moretime", this.participantService.findMoreTimeByParticipantId(participant));
+        model.addAttribute("advice", this.participantService.findAdviceByParticipantId(participant));
+        model.addAttribute("response",this.responseService.findByParticipantId(participant.getId()));
+        model.addAttribute("classAvg",this.responseService.findClassAvg(participant.getSurveyDate(), participant.getHouse()));
+        model.addAttribute("schoolAvg",this.responseService.findSchoolAvg(participant.getSurveyDate()));
+        return "participantDashboard";
     }
 
     @GetMapping("/admin/top/{topType}/semester/{surveyDate}")
