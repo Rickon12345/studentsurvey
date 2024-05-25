@@ -14,18 +14,9 @@ import java.util.List;
 @Controller
 public class AdminController {
     @Autowired
-    private UserService userService;
-    @Autowired
     private StudentService studentService;
     @Autowired
-    private ClassroomService classroomService;
-    @Autowired
     private TeacherService teacherService;
-
-    @Autowired
-    private CourseService courseService;
-    @Autowired
-    private StudentClassService studentClassService;
     @Autowired
     private AffiliationService affiliationService;
     @Autowired
@@ -146,28 +137,4 @@ public class AdminController {
         return "studentList";
     }
 
-    @GetMapping("/courses")
-    public String courses(Model model) {
-        model.addAttribute("courses",this.courseService.courses());
-        return "courseList";
-    }
-
-    @GetMapping("/classes")
-    public String classes(Model model) {
-        model.addAttribute("classes",this.classroomService.analysisClass());
-        return "classList";
-    }
-
-
-    @GetMapping("/course/delete/{id}")
-    public String courseDelete(@PathVariable("id") String id, Model model) {
-        try {
-            this.courseService.courseDelete(Long.valueOf(id));
-        } catch (Exception var4) {
-            model.addAttribute("courses",this.courseService.courses());
-            return "courseList";
-        }
-        model.addAttribute("courses",this.courseService.courses());
-        return "courseList";
-    }
 }

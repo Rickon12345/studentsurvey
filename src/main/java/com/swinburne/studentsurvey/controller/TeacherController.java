@@ -19,10 +19,6 @@ public class TeacherController {
     @Autowired
     private StudentService studentService;
     @Autowired
-    private TeacherCourseService teacherCourseService;
-    @Autowired
-    private CourseService courseService;
-    @Autowired
     private ParticipantService participantService;
     @Autowired
     private ResponseService responseService;
@@ -85,28 +81,6 @@ public class TeacherController {
         model.addAttribute("teacher", new Teacher());
         return "teacherCreate";
     }
-
-    @GetMapping("/teacher/course")
-    public String teacherCourseCreate(Model model) {
-        Long id = (Long) request.getSession().getAttribute("teacherId");
-        model.addAttribute("teacher", this.teacherService.getTeacherById(id));
-        model.addAttribute("courses", courseService.courses());
-        TeacherCourse tc = new TeacherCourse();
-        tc.setTeacherId(id);
-        model.addAttribute("teacherCourse", tc);
-        return "teacherCourseCreate";
-    }
-
-    @PostMapping("/teacher/course/save")
-    public String teacherCourseSave(@ModelAttribute TeacherCourse teacherCourse, Model model) {
-        this.teacherCourseService.save(teacherCourse);
-        Teacher t = this.teacherService.getTeacherById(teacherCourse.getTeacherId());
-        List<TeacherCourse> list = this.teacherCourseService.findTeacherCourseByTeacherId(teacherCourse.getTeacherId());
-        model.addAttribute("teacher", t);
-        model.addAttribute("teacherCourses", list);
-        return "teacherInfo";
-    }
-
 
     @GetMapping("/teacher/{id}")
     public String getTeacherById(@PathVariable("id") String id, Model model) {

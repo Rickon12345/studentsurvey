@@ -1,8 +1,6 @@
 package com.swinburne.studentsurvey.dao;
 
-import com.swinburne.studentsurvey.domain.Classroom;
 import com.swinburne.studentsurvey.domain.Insight;
-import com.swinburne.studentsurvey.domain.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;

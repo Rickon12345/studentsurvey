@@ -24,14 +24,6 @@ public class StudentController {
     @Autowired
     private NodeAnalyticsService nodeAnalyticsService;
     @Autowired
-    private StudentCourseService studentCourseService;
-    @Autowired
-    private StudentClassService studentClassService;
-    @Autowired
-    private TeacherCourseService teacherCourseService;
-    @Autowired
-    private CourseService courseService;
-    @Autowired
     HttpServletRequest request;
 
     HttpSession session = null;
@@ -99,55 +91,6 @@ public class StudentController {
         return "studentDashboard";
     }
 
-
-    @GetMapping("/student/course")
-    public String studentCourseCreate(Model model) {
-        Long id = (Long) request.getSession().getAttribute("studentId");
-        model.addAttribute("student", this.studentService.getStudentById(id));
-        model.addAttribute("courses", courseService.courses());
-        StudentCourse sc = new StudentCourse();
-        sc.setStudentId(id);
-        model.addAttribute("studentCourse", sc);
-        return "studentCourseCreate";
-    }
-
-    @PostMapping("/student/course/save")
-    public String studentCourseSave(@ModelAttribute StudentCourse studentCourse, Model model) {
-        studentCourse.setStatus("Enrolled");
-        this.studentCourseService.save(studentCourse);
-        Student t = this.studentService.getStudentById(studentCourse.getStudentId());
-        List<StudentCourse> list = this.studentCourseService.findStudentCourseByStudentId(studentCourse.getStudentId());
-        List<StudentClass> classList = this.studentClassService.findStudentClassByStudentId(studentCourse.getStudentId());
-        model.addAttribute("student", t);
-        model.addAttribute("studentCourses", list);
-        model.addAttribute("studentClasses", classList);
-        return "studentInfo";
-    }
-
-    @GetMapping("/student/class/{courseId}")
-    public String studentClassCreate(@PathVariable("courseId") String courseId, Model model) {
-        Long id = (Long) request.getSession().getAttribute("studentId");
-        model.addAttribute("student", this.studentService.getStudentById(id));
-        model.addAttribute("teacherCourses", this.teacherCourseService.findTeacherCourseByCourseId(Long.valueOf(courseId)));
-        StudentClass sc = new StudentClass();
-        sc.setStudentId(id);
-        model.addAttribute("StudentClass", sc);
-        return "studentClassCreate";
-    }
-
-    @PostMapping("/student/class/save")
-    public String studentClassSave(@ModelAttribute StudentClass studentClass, Model model) {
-        studentClass.setStatus("Participant");
-        this.studentClassService.save(studentClass);
-        Student t = this.studentService.getStudentById(studentClass.getStudentId());
-        List<StudentCourse> list = this.studentCourseService.findStudentCourseByStudentId(studentClass.getStudentId());
-        List<StudentClass> classList = this.studentClassService.findStudentClassByStudentId(studentClass.getStudentId());
-        model.addAttribute("student", t);
-        model.addAttribute("studentCourses", list);
-        model.addAttribute("studentClasses", classList);
-        return "studentInfo";
-    }
-
     @GetMapping("/student/register")
     public String register(Model model) {
         model.addAttribute("student", new Student());
@@ -157,20 +100,6 @@ public class StudentController {
     @GetMapping("/student/{id}")
     public String getStudentById(@PathVariable("id") String id, Model model) {
         model.addAttribute("data",this.studentService.getStudentById(Long.valueOf(id)));
-        return "studentInfo";
-    }
-
-    @PostMapping("/student/save")
-    public String studentSave(HttpServletRequest request, @ModelAttribute Student student, Model model) {
-        session = request.getSession();
-        session.setAttribute("studentId",student.getId());
-        this.studentService.studentSave(student);
-        Student t = this.studentService.getStudentById(student.getId());
-        List<StudentCourse> list = this.studentCourseService.findStudentCourseByStudentId(student.getId());
-        List<StudentClass> classList = this.studentClassService.findStudentClassByStudentId(student.getId());
-        model.addAttribute("student", t);
-        model.addAttribute("studentCourses", list);
-        model.addAttribute("studentClasses", classList);
         return "studentInfo";
     }
 
